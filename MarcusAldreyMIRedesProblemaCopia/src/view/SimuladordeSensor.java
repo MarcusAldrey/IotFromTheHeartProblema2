@@ -13,7 +13,10 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
+import control.ControllerSensor;
 import control.ControllerServerDeBorda;
+import exceptions.NenhumServerDeBordaEncontraException;
+
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.SwingConstants;
@@ -52,8 +55,10 @@ public class SimuladordeSensor extends JFrame implements ActionListener {
 	private Timer timer;
 	private JTextField txtNome;
 	private JComboBox<String> comboBoxEstado;
-	private ControllerServerDeBorda controller;
+	private ControllerSensor controller;
 	private int tentativas;
+	private JTextField textField_X;
+	private JTextField textField_Y;
 	/**
 	 * Launch the application.
 	 */
@@ -87,7 +92,7 @@ public class SimuladordeSensor extends JFrame implements ActionListener {
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 		UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-		controller = ControllerServerDeBorda.getInstance();
+		controller = ControllerSensor.getInstance();
 
 		textFreq = new JTextField();
 		textFreq.setBackground(Color.WHITE);
@@ -249,10 +254,31 @@ public class SimuladordeSensor extends JFrame implements ActionListener {
 		txtNome.setColumns(10);
 		txtNome.setBounds(42, 432, 86, 20);
 		contentPane.add(txtNome);
-	}
 
-	private void enviarDados(String mensagem) {
-		System.out.println(mensagem);
+		JLabel lblLocalizao = new JLabel("Localiza\u00E7\u00E3o");
+		lblLocalizao.setFont(new Font("Tahoma", Font.BOLD, 11));
+		lblLocalizao.setBounds(415, 360, 159, 14);
+		contentPane.add(lblLocalizao);
+
+		JLabel lblX = new JLabel("X:");
+		lblX.setBounds(415, 385, 10, 14);
+		contentPane.add(lblX);
+
+		textField_X = new JTextField();
+		textField_X.setText("12345");
+		textField_X.setColumns(10);
+		textField_X.setBounds(425, 382, 36, 20);
+		contentPane.add(textField_X);
+
+		JLabel lblY = new JLabel("Y:");
+		lblY.setBounds(415, 410, 10, 14);
+		contentPane.add(lblY);
+
+		textField_Y = new JTextField();
+		textField_Y.setText("localhost");
+		textField_Y.setColumns(10);
+		textField_Y.setBounds(425, 407, 36, 20);
+		contentPane.add(textField_Y);
 	}
 
 	private void atualizarTextos() {
@@ -293,7 +319,18 @@ public class SimuladordeSensor extends JFrame implements ActionListener {
 	 */
 	private void iniciarTransmissao() {
 		try {
-			controller.criarConexao(textIP.getText(), Integer.parseInt(textPorta.getText()));
+			try {
+				controller.conectarAoServerMaisProximo(textIP.getText(), Integer.parseInt(textPorta.getText()), Integer.parseInt(textField_X.getText()), Integer.parseInt(textField_Y.getText()));
+			} catch (ClassNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				return;
+			} catch (NenhumServerDeBordaEncontraException e) {
+				// TODO Auto-generated catch block
+				JOptionPane.showMessageDialog(null, "Nenhum servidor de borda na lista da nuvem");
+				e.printStackTrace();
+				return;
+			}
 		} catch (NumberFormatException | IOException e1) {
 			// TODO Auto-generated catch block
 			JOptionPane.showMessageDialog(null, "Não foi possível criar conexão");
@@ -312,8 +349,8 @@ public class SimuladordeSensor extends JFrame implements ActionListener {
 		timer.schedule(new Transmissao(),2000,2000);
 		System.out.println("Tramissão iniciada");
 	}
-	
-	
+
+
 	private void pararTransmissao(){
 		estaTransmitindo = false;
 		btnStartStop.setText("Iniciar Transmissão");
@@ -333,9 +370,9 @@ public class SimuladordeSensor extends JFrame implements ActionListener {
 			e.printStackTrace();
 		}
 	}
-	
-	
-	
+
+
+
 	private class Transmissao extends TimerTask {
 		public void run() {
 			/*Método chamado a cada 2 segundos. Envia as informações do sensor para o servidor. Caso tente 5 vezes e não consiga, para a transmissão*/

@@ -28,6 +28,8 @@ public class ControllerServerDeBorda {
 		socket = new Socket(ipNuvem,portaNuvem);
 		output = new ObjectOutputStream(socket.getOutputStream());
 		output.writeObject("connect server,"+IP+","+porta+","+x+","+y);
+		output.close();
+		socket.close();
 	}
 
 	public static ControllerServerDeBorda getInstance(){
