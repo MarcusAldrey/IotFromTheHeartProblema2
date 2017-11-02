@@ -21,9 +21,10 @@ public class ControllerCloud {
 	
 	public String getServerMaisProximo(int x, int y) {
 		double distanciaDoMaisProximo = 0;
-		String IPdoMaisProximo = "server de borda nao encontrado";
-		int portaDoMaisProximo = -1;
+		String IPdoMaisProximo = "none";
+		int portaDoMaisProximo = 0;
 		for(String infos : infoServers) {
+			System.out.println(infos);
 			String[] informations = infos.split(",");
 			String IPAtual = informations[0];
 			int portaAtual = Integer.parseInt(informations[1]);
@@ -36,7 +37,10 @@ public class ControllerCloud {
 				distanciaDoMaisProximo = distanciaAtual;
 			}			
 		}
-		return IPdoMaisProximo + portaDoMaisProximo;
+		if(IPdoMaisProximo.equals("none"))
+			return IPdoMaisProximo + portaDoMaisProximo;
+		else
+			return "server de borda nao encontrado";
 	}
 
 }
