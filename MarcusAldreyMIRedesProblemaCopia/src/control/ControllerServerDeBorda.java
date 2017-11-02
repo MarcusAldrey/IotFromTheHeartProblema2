@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
@@ -21,6 +22,12 @@ public class ControllerServerDeBorda {
 
 	private ControllerServerDeBorda() {
 		pacientes = new ArrayList<Paciente>();
+	}
+	
+	public void cadastrarNaNuvem(String ipNuvem, int portaNuvem, String IP, int porta, int x, int y) throws UnknownHostException, IOException {
+		socket = new Socket(ipNuvem,portaNuvem);
+		output = new ObjectOutputStream(socket.getOutputStream());
+		output.writeObject("connect server,"+IP+","+porta+","+x+","+y);
 	}
 
 	public static ControllerServerDeBorda getInstance(){

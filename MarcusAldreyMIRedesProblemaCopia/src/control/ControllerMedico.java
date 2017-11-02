@@ -42,16 +42,7 @@ public class ControllerMedico {
 		return instance;
 	}
 
-	public void logar(String usuario, String senha) throws IOException, MedicoNaoEncontradoException, ClassNotFoundException {
-		output.writeObject("CONNECT MEDICO,LOGIN,"+usuario+","+senha);
-		while(true){
-			if(input.readObject() == "true")
-				throw new MedicoNaoEncontradoException();
-			return;
-		}
-	}
-
-	public Paciente receberPacientedoServidor(String nome) throws IOException, ClassNotFoundException, PacienteNaoEncontradoException, MensagemInvalidaException {
+	public Paciente receberInfosDePacientedoServidorDeBorda(String nome) throws IOException, ClassNotFoundException, PacienteNaoEncontradoException, MensagemInvalidaException {
 		output.writeObject("connect medico,info,"+nome);
 		while(true) {
 			String mensagem = (String) input.readObject();
@@ -69,9 +60,22 @@ public class ControllerMedico {
 			return new Paciente(nome, frequencia, sistole, diastole, emMovimento);
 		}
 	}
-
-	public List<Paciente> receberPacientesdoServidor() {
-		return null;
+	
+	public void conectarAoServidorDeBorda(String idPaciente) throws IOException, MensagemInvalidaException, PacienteNaoEncontradoException, ClassNotFoundException {
+		output.writeObject("connect medico,location,"+idPaciente);
+		while(true) {
+			String mensagem = (String) input.readObject();
+			System.out.println(mensagem);
+			if(mensagem.equals("paciente nao encontrado")) {
+				throw new PacienteNaoEncontradoException();
+			}
+			String[] mensagemSeparada = mensagem.split(",");
+			if(mensagemSeparada.length != 2)
+				throw new MensagemInvalidaException();
+			String Ip = mensagemSeparada[0];
+			int porta  = Integer.parseInt(mensagemSeparada[1]);
+			criarConexao(Ip, porta);
+		}
 	}
 
 	/**

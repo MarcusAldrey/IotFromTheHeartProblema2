@@ -13,7 +13,7 @@ public class Cloud {
 		while(true){
 			System.out.println("Aguardando cliente se conectar...");
 			Socket socket = this.server.accept();
-			ThreadServerDeBorda a = new ThreadServerDeBorda(socket);
+			ThreadCloud a = new ThreadCloud(socket);
 			a.start();
 			System.out.println("Novo cliente adicionado");
 		}

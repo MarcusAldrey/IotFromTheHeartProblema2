@@ -299,7 +299,7 @@ public class DoctorView extends JFrame {
 	private void atualizarPacienteMonitorado() {
 			try {
 				
-				pacienteMonitorado = ControllerMedico.getInstance().receberPacientedoServidor((String) list.getSelectedValue());
+				pacienteMonitorado = ControllerMedico.getInstance().receberInfosDePacientedoServidorDeBorda((String) list.getSelectedValue());
 			
 			} catch (ClassNotFoundException | IOException | PacienteNaoEncontradoException
 					| MensagemInvalidaException e) {

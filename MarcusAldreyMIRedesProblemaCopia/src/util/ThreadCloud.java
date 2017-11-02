@@ -5,7 +5,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 
-public class ThreadCloud {
+public class ThreadCloud extends Thread{
 	private Socket socket;
 	private ObjectInputStream input;
 	private ObjectOutputStream output;
@@ -39,6 +39,12 @@ public class ThreadCloud {
 
 	public void setOutput(ObjectOutputStream output) {
 		this.output = output;
+	}
+
+	@Override
+	public void run() {
+		// TODO Auto-generated method stub
+		
 	}
 	
 	
