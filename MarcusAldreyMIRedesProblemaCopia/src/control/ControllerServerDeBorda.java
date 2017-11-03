@@ -17,6 +17,12 @@ public class ControllerServerDeBorda {
 	private Socket socket;
 	private ObjectInputStream input;
 	private ObjectOutputStream output;
+	private int porta;
+	private String ip;
+	private String ipNuvem;
+	private int portaNuvem;
+	private int x;
+	private int y;
 	private static ControllerServerDeBorda instance;
 	private List<Paciente> pacientes;
 
@@ -25,11 +31,8 @@ public class ControllerServerDeBorda {
 	}
 	
 	public void cadastrarNaNuvem(String ipNuvem, int portaNuvem, String IP, int porta, int x, int y) throws UnknownHostException, IOException {
-		socket = new Socket(ipNuvem,portaNuvem);
-		output = new ObjectOutputStream(socket.getOutputStream());
+		criarConexao(ipNuvem, portaNuvem);
 		output.writeObject("connect server,"+IP+","+porta+","+x+","+y);
-		output.close();
-		socket.close();
 	}
 
 	public static ControllerServerDeBorda getInstance(){

@@ -17,21 +17,12 @@ public class ThreadServerDeBorda extends Thread {
 	private Socket socket;
 	private ObjectInputStream input;
 	private ObjectOutputStream output;
-	private int x,y,porta;
-	private String Ip;
-	private String IpNuvem;
-
-	public ThreadServerDeBorda(Socket socket, int x, int y, int porta, String Ip, String iPNuvem) throws IOException {
+	
+	public ThreadServerDeBorda(Socket socket) throws IOException {
 		// TODO Auto-generated constructor stub
 		this.setSocket(socket);
 		this.input = new ObjectInputStream(socket.getInputStream());
 		this.output = new ObjectOutputStream(socket.getOutputStream());
-		this.x = x;
-		this.y = y;
-		this.Ip = Ip;
-		this.porta = porta;
-		this.IpNuvem = iPNuvem;
-		System.out.println("Criado servidor com porta " + porta + " no local(" + x + "," + y + ") e ip " + Ip + " para se comunicar com a nuvem em " + IpNuvem);
 	}
 
 	public void enviarMensagem(Object object) throws IOException{
@@ -129,73 +120,5 @@ public class ThreadServerDeBorda extends Thread {
 		this.socket = socket;
 	}
 
-	/**
-	 * @return the x
-	 */
-	public int getX() {
-		return x;
-	}
-
-	/**
-	 * @param x the x to set
-	 */
-	public void setX(int x) {
-		this.x = x;
-	}
-
-	/**
-	 * @return the y
-	 */
-	public int getY() {
-		return y;
-	}
-
-	/**
-	 * @param y the y to set
-	 */
-	public void setY(int y) {
-		this.y = y;
-	}
-
-	/**
-	 * @return the porta
-	 */
-	public int getPorta() {
-		return porta;
-	}
-
-	/**
-	 * @param porta the porta to set
-	 */
-	public void setPorta(int porta) {
-		this.porta = porta;
-	}
-
-	/**
-	 * @return the ip
-	 */
-	public String getIp() {
-		return Ip;
-	}
-
-	/**
-	 * @param ip the ip to set
-	 */
-	public void setIp(String ip) {
-		Ip = ip;
-	}
-
-	/**
-	 * @return the ipNuvem
-	 */
-	public String getIpNuvem() {
-		return IpNuvem;
-	}
-
-	/**
-	 * @param ipNuvem the ipNuvem to set
-	 */
-	public void setIpNuvem(String ipNuvem) {
-		IpNuvem = ipNuvem;
-	}
+	
 }

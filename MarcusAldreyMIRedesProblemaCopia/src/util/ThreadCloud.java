@@ -1,11 +1,13 @@
 package util;
 
+import java.io.EOFException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 
 import control.ControllerCloud;
+import control.ControllerServerDeBorda;
 
 public class ThreadCloud extends Thread{
 	private Socket socket;
@@ -60,25 +62,43 @@ public class ThreadCloud extends Thread{
 				System.out.println("Recebeu " + mensagem);
 				String[] mensagemDividida = mensagem.split(","); //Divide a mensagem onde tem vírgula
 				/*Caso a mensagem venha de um sensor*/
-				
+
 				if(mensagemDividida[0].equals("connect server")) {
-					
+
 					if(mensagemDividida.length != 5) {
 						System.out.println("Mensagem inválida recebida"); //Se a mensagem possuir a estrutura errada ela não será processada
 						return;
 					}
-					
+
 					String IP = mensagemDividida[1];
 					int porta = Integer.parseInt(mensagemDividida[2]);
 					int x = Integer.parseInt(mensagemDividida[3]);
 					int y = Integer.parseInt(mensagemDividida[4]);
 					String infoServerDeBorda = IP + "," + porta + "," + x + "," + y+ ",";
-					
+
 					/*adiciona o servidor de borda à lista de servidores da cloud*/
-					ControllerCloud.getInstance().adicionarServerDeBorda(infoServerDeBorda);					
+					ControllerCloud.getInstance().adicionarServerDeBorda(infoServerDeBorda);
+				}
+				else if(mensagemDividida[0].equals("connect sensor")) {
+					
+					if(mensagemDividida.length != 4) {
+						System.out.println("Mensagem inválida recebida"); //Se a mensagem possuir a estrutura errada ela não será processada
+						return;
+					}
+					
+					if(mensagemDividida[1].equals("closest server")) {
+						int x = Integer.parseInt(mensagemDividida[2]);
+						int y = Integer.parseInt(mensagemDividida[3]);
+						String serverMaisProximo = ControllerCloud.getInstance().getServerMaisProximo(x, y);
+						output.writeObject(serverMaisProximo);
+						System.out.println("server mais proximo esta em: " + serverMaisProximo);
+					}
 				}
 			}
-		}   catch (ClassNotFoundException | IOException e) {
+		}   catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}

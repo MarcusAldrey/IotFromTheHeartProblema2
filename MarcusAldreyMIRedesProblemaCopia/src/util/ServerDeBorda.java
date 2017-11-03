@@ -35,7 +35,7 @@ public class ServerDeBorda {
 		while(true){
 			System.out.println("Aguardando cliente se conectar...");
 			Socket socket = this.server.accept();
-			ThreadServerDeBorda a = new ThreadServerDeBorda(socket, x, y,porta,IP,IPNuvem);
+			ThreadServerDeBorda a = new ThreadServerDeBorda(socket);
 			a.start();
 			System.out.println("Novo cliente adicionado");
 		}
