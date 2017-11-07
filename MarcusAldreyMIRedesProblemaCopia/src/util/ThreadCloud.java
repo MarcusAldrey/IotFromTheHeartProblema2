@@ -61,7 +61,7 @@ public class ThreadCloud extends Thread{
 				String mensagem = (String) input.readObject();
 				System.out.println("Recebeu " + mensagem);
 				String[] mensagemDividida = mensagem.split(","); //Divide a mensagem onde tem vírgula
-				/*Caso a mensagem venha de um sensor*/
+				/*Caso a mensagem venha de um servidor de borda*/
 
 				if(mensagemDividida[0].equals("connect server")) {
 
