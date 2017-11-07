@@ -31,7 +31,7 @@ public class ControllerSensor {
 		input = new ObjectInputStream(socket.getInputStream());
 	}
 
-	public void conectarAoServerMaisProximo(String IP, int porta, int x, int y) throws IOException, NenhumServerDeBordaEncontraException, ClassNotFoundException {
+	public String infoServerMaisProximo(String IP, int porta, int x, int y) throws IOException, NenhumServerDeBordaEncontraException, ClassNotFoundException {
 		criarConexao(IP,porta);
 		output.writeObject("connect sensor,closest server,"+x+","+y);
 		while(true) {
@@ -39,12 +39,7 @@ public class ControllerSensor {
 			System.out.println(mensagem);
 			if(mensagem.equals("server de borda nao encontrado"))
 				throw new NenhumServerDeBordaEncontraException();
-			String[] mensagemSeparada = mensagem.split(",");
-			
-			String ipDoMaisProximo = mensagemSeparada[0];
-			int portaDoMaisProximo = Integer.parseInt(mensagemSeparada[1]);
-			criarConexao(ipDoMaisProximo, portaDoMaisProximo);
-			return;
+			return mensagem;
 		}
 	}
 }

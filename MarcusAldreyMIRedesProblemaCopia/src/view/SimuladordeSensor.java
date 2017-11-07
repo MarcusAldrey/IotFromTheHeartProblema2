@@ -318,9 +318,10 @@ public class SimuladordeSensor extends JFrame implements ActionListener {
 	 * 
 	 */
 	private void iniciarTransmissao() {
+		String endereco = null;
 		try {
 			try {
-				controller.conectarAoServerMaisProximo(textIP.getText(), Integer.parseInt(textPorta.getText()), Integer.parseInt(textField_X.getText()), Integer.parseInt(textField_Y.getText()));
+				endereco = controller.infoServerMaisProximo(textIP.getText(), Integer.parseInt(textPorta.getText()), Integer.parseInt(textField_X.getText()), Integer.parseInt(textField_Y.getText()));
 			} catch (ClassNotFoundException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -337,6 +338,20 @@ public class SimuladordeSensor extends JFrame implements ActionListener {
 			e1.printStackTrace();
 			return;
 		}
+		if(endereco == null)
+			return;
+		else {
+			String[] ipEPorta = endereco.split(",");
+			String ip = ipEPorta[0];
+			int porta = Integer.parseInt(ipEPorta[1]);
+			try {
+				controller.criarConexao(ip, porta);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
 		textIP.setEditable(false);
 		textPorta.setEditable(false);
 		textIP.setEnabled(false);
