@@ -5,7 +5,7 @@ import java.util.List;
 import model.Paciente;;
 
 public class ControllerCloud {
-	private List<Paciente> pacientesEmRisco = new ArrayList<Paciente>();
+	private List<String> pacientesEmRisco = new ArrayList<String>();
 	private List<String> infoServers = new ArrayList<String>();   
 	private static ControllerCloud instance;
 	
@@ -42,6 +42,10 @@ public class ControllerCloud {
 			return IPdoMaisProximo + "," + portaDoMaisProximo;
 		else
 			return "server de borda nao encontrado";
+	}
+	
+	public void adicionarPacienteEmRisco(Paciente paciente) {
+		pacientesEmRisco.add(paciente);
 	}
 
 }

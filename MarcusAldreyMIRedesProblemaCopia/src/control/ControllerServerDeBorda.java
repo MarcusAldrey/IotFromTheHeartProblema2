@@ -9,25 +9,24 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import model.Medico;
 import model.Paciente;
 
 public class ControllerServerDeBorda {
-	private Socket socket;
+	private Socket socketCloud;
 	private ObjectInputStream input;
 	private ObjectOutputStream output;
-	private int porta;
-	private String ip;
-	private String ipNuvem;
-	private int portaNuvem;
-	private int x;
-	private int y;
+	private Timer timer;
 	private static ControllerServerDeBorda instance;
 	private List<Paciente> pacientes;
 
 	private ControllerServerDeBorda() {
 		pacientes = new ArrayList<Paciente>();
+		timer = new Timer();
+		timer.schedule(new AtualizaServidor(), 2000,5000);
 	}
 	
 	public void cadastrarNaNuvem(String ipNuvem, int portaNuvem, String IP, int porta, int x, int y) throws UnknownHostException, IOException {
@@ -74,9 +73,9 @@ public class ControllerServerDeBorda {
 	}
 
 	public void criarConexao(String IP, int porta) throws IOException {
-		socket = new Socket(IP,porta);
-		output = new ObjectOutputStream(socket.getOutputStream());
-		input = new ObjectInputStream(socket.getInputStream());
+		socketCloud = new Socket(IP,porta);
+		output = new ObjectOutputStream(socketCloud.getOutputStream());
+		input = new ObjectInputStream(socketCloud.getInputStream());
 	}
 
 	public Object receberMensagem() throws ClassNotFoundException, IOException{
@@ -99,6 +98,32 @@ public class ControllerServerDeBorda {
 
 	private void ordenarListaPacientes(){
 		Collections.sort(pacientes);
+	}
+	
+	private class AtualizaServidor extends TimerTask {
+
+		@Override
+		public void run() {
+			// TODO Auto-generated method stub
+			/* A cada cinco segundos, a lista de pacientes críticos é enviada para o servidor */
+			System.out.println("A lista está com " + pacientes.size() +" pacientes");
+			String todosOsPacientes = "";
+			Iterator<Paciente> iterator = pacientes.iterator();
+			while(iterator.hasNext()) {
+				Paciente paciente = (Paciente) iterator.next();
+				if(paciente.getFrequencia() > 100 && !Boolean.parseBoolean(paciente.isEmMovimento())) {
+				String nomePacienteAtual = paciente.getNome();
+				todosOsPacientes = todosOsPacientes.concat(nomePacienteAtual+",");
+				}
+			}
+			System.out.println("connect server, info, todos" + todosOsPacientes);
+			try {
+				enviarMensagem("connect server, info, todos" + todosOsPacientes);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 	}
 
 }

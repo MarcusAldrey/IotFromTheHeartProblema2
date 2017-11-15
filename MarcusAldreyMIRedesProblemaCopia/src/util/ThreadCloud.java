@@ -1,13 +1,11 @@
 package util;
 
-import java.io.EOFException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 
 import control.ControllerCloud;
-import control.ControllerServerDeBorda;
 
 public class ThreadCloud extends Thread{
 	private Socket socket;
@@ -65,27 +63,31 @@ public class ThreadCloud extends Thread{
 
 				if(mensagemDividida[0].equals("connect server")) {
 
-					if(mensagemDividida.length != 5) {
-						System.out.println("Mensagem inválida recebida"); //Se a mensagem possuir a estrutura errada ela não será processada
-						return;
+					if(mensagemDividida[1].equals("info") && mensagemDividida[2].equals("todos")) {
+						for(int i = 0; i < mensagemDividida.length; i++) {
+							
+						}
 					}
 
-					String IP = mensagemDividida[1];
-					int porta = Integer.parseInt(mensagemDividida[2]);
-					int x = Integer.parseInt(mensagemDividida[3]);
-					int y = Integer.parseInt(mensagemDividida[4]);
-					String infoServerDeBorda = IP + "," + porta + "," + x + "," + y+ ",";
+					else {
 
-					/*adiciona o servidor de borda à lista de servidores da cloud*/
-					ControllerCloud.getInstance().adicionarServerDeBorda(infoServerDeBorda);
+						String IP = mensagemDividida[1];
+						int porta = Integer.parseInt(mensagemDividida[2]);
+						int x = Integer.parseInt(mensagemDividida[3]);
+						int y = Integer.parseInt(mensagemDividida[4]);
+						String infoServerDeBorda = IP + "," + porta + "," + x + "," + y+ ",";
+
+						/*adiciona o servidor de borda à lista de servidores da cloud*/
+						ControllerCloud.getInstance().adicionarServerDeBorda(infoServerDeBorda);
+					}
 				}
 				else if(mensagemDividida[0].equals("connect sensor")) {
-					
+
 					if(mensagemDividida.length != 4) {
 						System.out.println("Mensagem inválida recebida"); //Se a mensagem possuir a estrutura errada ela não será processada
 						return;
 					}
-					
+
 					if(mensagemDividida[1].equals("closest server")) {
 						int x = Integer.parseInt(mensagemDividida[2]);
 						int y = Integer.parseInt(mensagemDividida[3]);
