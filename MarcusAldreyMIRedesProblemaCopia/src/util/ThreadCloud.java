@@ -4,8 +4,12 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.util.Iterator;
+import java.util.List;
 
 import control.ControllerCloud;
+import control.ControllerServerDeBorda;
+import model.Paciente;
 
 public class ThreadCloud extends Thread{
 	private Socket socket;
@@ -59,13 +63,14 @@ public class ThreadCloud extends Thread{
 				String mensagem = (String) input.readObject();
 				System.out.println("Recebeu " + mensagem);
 				String[] mensagemDividida = mensagem.split(","); //Divide a mensagem onde tem vírgula
-				/*Caso a mensagem venha de um servidor de borda*/
 
+				/*Caso a mensagem venha de um servidor de borda*/
 				if(mensagemDividida[0].equals("connect server")) {
 
 					if(mensagemDividida[1].equals("info") && mensagemDividida[2].equals("todos")) {
-						for(int i = 0; i < mensagemDividida.length; i++) {
-							
+						String ipServer = mensagemDividida[3];
+						for(int i = 4; i < mensagemDividida.length; i++) {
+							ControllerCloud.getInstance().adicionarPacienteEmRisco(ipServer+","+mensagemDividida[i]);
 						}
 					}
 
@@ -81,6 +86,20 @@ public class ThreadCloud extends Thread{
 						ControllerCloud.getInstance().adicionarServerDeBorda(infoServerDeBorda);
 					}
 				}
+
+				/* Caso a mensagem seja de um médico, será verificado se ele quer todos os pacientes ou algum especifico */
+				else if(mensagemDividida[0].equals("connect medico")) {
+					if(mensagemDividida[1].equals("info")) {
+						/* Caso queira todos, recebera uma String com o nome de todos os pacientes separados por vírgula */
+						if(mensagemDividida[2].equals("todos")) {
+							String todosOsPacientes = ControllerCloud.getInstance().getPacientes();
+							System.out.println(todosOsPacientes);
+							output.writeObject(todosOsPacientes);
+						}
+					}
+				}				
+				
+				/*caso a mensagem venha de um sensor*/
 				else if(mensagemDividida[0].equals("connect sensor")) {
 
 					if(mensagemDividida.length != 4) {

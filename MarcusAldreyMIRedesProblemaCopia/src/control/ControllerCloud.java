@@ -1,5 +1,6 @@
 package control;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import model.Paciente;;
@@ -8,17 +9,17 @@ public class ControllerCloud {
 	private List<String> pacientesEmRisco = new ArrayList<String>();
 	private List<String> infoServers = new ArrayList<String>();   
 	private static ControllerCloud instance;
-	
+
 	public static ControllerCloud getInstance(){
 		if(instance == null)
 			instance = new ControllerCloud();
 		return instance;		 
 	}
-	
+
 	public void adicionarServerDeBorda(String infosServer) {
 		infoServers.add(infosServer);
 	}
-	
+
 	public String getServerMaisProximo(int x, int y) {
 		double distanciaDoMaisProximo = Double.POSITIVE_INFINITY;
 		String IPdoMaisProximo = "none";
@@ -43,9 +44,31 @@ public class ControllerCloud {
 		else
 			return "server de borda nao encontrado";
 	}
-	
-	public void adicionarPacienteEmRisco(Paciente paciente) {
-		pacientesEmRisco.add(paciente);
-	}
 
+	public String getPacientes() {
+		String todosOsPacientes = "";
+		Iterator<String> iterator = pacientesEmRisco.iterator();
+		while(iterator.hasNext()) {
+			String info = (String) iterator.next();
+			System.out.println(info);
+			String[] infoSeparada = info.split(",");
+			String nomePacienteAtual = infoSeparada[1];
+			todosOsPacientes = todosOsPacientes.concat(nomePacienteAtual+",");					
+		}
+		return todosOsPacientes;
+	}
+	
+	public void adicionarPacienteEmRisco(String infoPaciente) {
+		String infoDividida[] = infoPaciente.split(",");
+		String nomePaciente = infoDividida[1];
+		String[] pacienteAtual;
+		for(String info : pacientesEmRisco) {
+			pacienteAtual = info.split(",");
+			if(pacienteAtual[1].equals(nomePaciente)) {
+				System.out.println("O paciente já está na listar");
+				return;
+			}
+		}
+		pacientesEmRisco.add(infoPaciente);
+	}
 }
